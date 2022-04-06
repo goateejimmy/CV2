@@ -1,3 +1,4 @@
+from dis import dis
 from PIL import Image
 import numpy as np
 from scipy.spatial import distance
@@ -32,6 +33,24 @@ def get_bags_of_sifts(image_paths):
     Output : 
         image_feats : (N, d) feature, each row represent a feature of an image
     '''
+    with open('vocab.pkl','rb') as handle:
+        vocab = pickle.load(handle)
+    sifts = []
+    image_feats = []
+    for path in image_paths:
+        img = Image.open(path)
+        img = np.array(img)
+        keypoints,descriptors = dsift(img,step=[5,5],fast=True)
+        if descriptors is not None:
+            dist = distance.cdist(vocab,descriptors,metric='euclidean')
+            idx = np.argmin(dist,axis=0)
+            hist,bin_edges = np.histogram(idx,bins=len(vocab))
+            hist_norm = [float(i)/sum(hist) for i  in hist]
+            image_feats.append(hist_norm)
+    
+    image_feats = np.array(image_feats)
+        
+    
     
     #############################################################################
     #                                END OF YOUR CODE                           #
