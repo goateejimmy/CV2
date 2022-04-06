@@ -23,11 +23,19 @@ def get_tiny_images(image_paths):
     for path in image_paths:
         image = cv2.imread(path)
         image=cv2.resize(image,dsize=(16,16), interpolation=cv2.INTER_NEAREST)
-        image = image - np.sum(image)/256
+        image = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+
+        image = np.array(image)
         feature = np.reshape(image,(1,256))
+        feature = feature- np.average(feature)
+        norm = np.linalg.norm(feature,ord =2,axis=1)
+        feature = feature/norm
+        
+        
         tiny_images_list.append(feature)
     
     tiny_images = np.array(tiny_images_list)
+    tiny_images = np.squeeze(tiny_images,axis=1)
 
 
 
