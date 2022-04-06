@@ -1,5 +1,6 @@
 import imp
 from PIL import Image
+import cv2
 import numpy as np
 
 from cyvlfeat.sift.dsift import dsift
@@ -59,9 +60,24 @@ def build_vocabulary(image_paths, vocab_size):
     Output :
         Clusters centers of Kmeans
     '''
+    sifts = []
+    for path in image_paths:
+        image = cv2.imread(path)
+        _keypoints, descriptors = dsift(image, step=[5,5], fast=True) 
+        if descriptors is not None:
+            for des in descriptors:
+                sifts.append(des)
+    
+    sifts = np.array(sifts)
+    vocab = kmeans(sifts.astype('float32'),vocab_size,initialization="PLUSPLUS")
+
+
 
     ##################################################################################
     #                                END OF YOUR CODE                                #
     ##################################################################################
     return vocab
+
+
+
 
