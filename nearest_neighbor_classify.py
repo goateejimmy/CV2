@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import numpy as np
+
 import scipy.spatial.distance as distance
 from scipy.stats import mode
 
@@ -36,6 +37,26 @@ def nearest_neighbor_classify(train_image_feats, train_labels, test_image_feats)
             a list(M) of string, each string indicate the predict
             category for each testing image.
     '''
+    k= 10
+    vote = []
+    test_predicts = []
+
+    dist = distance.cdist(train_image_feats,test_image_feats,metric='euclidean')
+    for i in dist:
+        index = sorted(range(len(i)),key=lambda k:i[k])
+        for num in range(0,k):
+            vote.append(train_labels[index.index(num)])
+        voteresult = max(set(vote),key=vote.count)
+        test_predicts.append(voteresult)
+        
+            
+        
+        
+        
+        
+
+        
+        
 
     #############################################################################
     #                                END OF YOUR CODE                           #
