@@ -62,7 +62,9 @@ def build_vocabulary(image_paths, vocab_size):
     '''
     sifts = []
     for path in image_paths:
-        image = cv2.imread(path)
+        image = Image.open(path)
+        image = np.array(image)
+
         _keypoints, descriptors = dsift(image, step=[5,5], fast=True) 
         if descriptors is not None:
             for des in descriptors:
@@ -77,7 +79,3 @@ def build_vocabulary(image_paths, vocab_size):
     #                                END OF YOUR CODE                                #
     ##################################################################################
     return vocab
-
-
-
-
